@@ -23,7 +23,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 
-llm = OpenAI(openai_api_key="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")
+llm = OpenAI(openai_api_key="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")
 
 # import wikipedia sentences
 candidate_sentences = pd.read_csv(
@@ -126,6 +126,8 @@ def ask():
             "response": response.replace("\n", ""),
             "context": context,
             "entities": entities,
+            "nodes": list(G.nodes),
+            "history": conversation_history,
         }
     )
 
