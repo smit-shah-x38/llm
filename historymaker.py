@@ -38,7 +38,7 @@ df = pd.DataFrame(
 )
 
 # create a directed-graph from a dataframe
-G2 = nx.from_pandas_edgelist(
+G = nx.from_pandas_edgelist(
     df, "source", "target", edge_attr=True, create_using=nx.MultiDiGraph()
 )
 
@@ -48,6 +48,8 @@ conversation_history = []
 def return_context(noun):
     x = noun
 
+    sentences = []
+
     if x in G.nodes:
         neighbor_nodes = list(G.neighbors(x))  # get the list of neighbors of node n
         neighbor_nodes.append(x)  # add node n to the list
@@ -55,10 +57,11 @@ def return_context(noun):
 
         neighbor_edges = list(G.edges(x, data=True))
 
-    sentences = []
-    for u, v, d in neighbor_edges:
-        verb = d["edge"]  # get the verb from the edge label
-        sentences.append(f"{u} {verb} {v}.")  # create a sentence with the source, verb,
+        for u, v, d in neighbor_edges:
+            verb = d["edge"]  # get the verb from the edge label
+            sentences.append(
+                f"{u} {verb} {v}."
+            )  # create a sentence with the source, verb,
 
     return sentences
 
@@ -124,7 +127,10 @@ def ask():
     for i in entities:
         context.append(return_context(i))
 
-    question.append(j for j in context)
+    # for j in context:
+    #     question = question + j
+
+    conversation_history.append(str(context))
 
     prompt = PromptTemplate(
         template=" ".join(conversation_history) + "\nQ: {question}\n A: ",
@@ -133,7 +139,13 @@ def ask():
 
     llm_chain = LLMChain(prompt=prompt, llm=llm)
     response = llm_chain.run(question)
-    return jsonify({"response": response.replace("\n", "")})
+    return jsonify(
+        {
+            "response": response.replace("\n", ""),
+            "context": context,
+            "entities": entities,
+        }
+    )
 
 
 if __name__ == "__main__":
