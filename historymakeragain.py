@@ -11,6 +11,7 @@ import requests
 import spacy
 from spacy import displacy
 
+# Load the English language model
 nlp = spacy.load("en_core_web_sm")
 
 from spacy.matcher import Matcher
@@ -72,53 +73,28 @@ def return_context(noun):
     return sentences
 
 
-def get_entities(sent):
-    ## chunk 1
-    ent1 = ""
-    ent2 = ""
+def get_entities(sentence):
+    # Parse the sentence using spaCy
+    doc = nlp(sentence)
 
-    prv_tok_dep = ""  # dependency tag of previous token in the sentence
-    prv_tok_text = ""  # previous token in the sentence
+    # Print the text and label of each noun phrase
+    for chunk in doc.noun_chunks:
+        print(chunk.text, chunk.label_)
 
-    prefix = ""
-    modifier = ""
+    lister = [i.text for i in doc.noun_chunks]
 
-    for tok in nlp(sent):
-        ## chunk 2
-        # if token is a punctuation mark then move on to the next token
-        if tok.dep_ != "punct":
-            # check: token is a compound word or not
-            if tok.dep_ == "compound":
-                prefix = tok.text
-                # if the previous word was also a 'compound' then add the current word to it
-                if prv_tok_dep == "compound":
-                    prefix = prv_tok_text + " " + tok.text
+    for i in lister:
+        lisst = i.split(" ")
 
-            # check: token is a modifier or not
-            if tok.dep_.endswith("mod") == True:
-                modifier = tok.text
-                # if the previous word was also a 'compound' then add the current word to it
-                if prv_tok_dep == "compound":
-                    modifier = prv_tok_text + " " + tok.text
+        if "the" in lisst:
+            lisst.remove("the")
 
-            ## chunk 3
-            if tok.dep_.find("subj") == True:
-                ent1 = modifier + " " + prefix + " " + tok.text
-                prefix = ""
-                modifier = ""
-                prv_tok_dep = ""
-                prv_tok_text = ""
+        sentence = ""
+        for x in lisst:
+            sentence = sentence + str(x)
 
-            ## chunk 4
-            if tok.dep_.find("obj") == True:
-                ent2 = modifier + " " + prefix + " " + tok.text
-
-            ## chunk 5
-            # update variables
-            prv_tok_dep = tok.dep_
-            prv_tok_text = tok.text
-
-    return [ent1.strip(), ent2.strip()]
+        i = x
+    return lister
 
 
 @app.route("/ask", methods=["POST"])
@@ -150,7 +126,6 @@ def ask():
             "response": response.replace("\n", ""),
             "context": context,
             "entities": entities,
-            "nodelist": list(G.nodes),
         }
     )
 
