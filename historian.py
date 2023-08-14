@@ -1,7 +1,29 @@
-from transformers import pipeline
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import transformers
+import torch
 
-prompt = "Hugging Face is a community-based open-source platform for machine learning."
-generator = pipeline(
-    task="text-generation", model="/var/wd_smit/localdata/models/Llama-2-7b-chat-hf"
+model = "lmsys/vicuna-7b-v1.1"
+
+tokenizer = AutoTokenizer.from_pretrained(model)
+pipeline = transformers.pipeline(
+    "text-generation",
+    model=model,
+    tokenizer=tokenizer,
+    torch_dtype=torch.bfloat16,
+    trust_remote_code=True,
+    device_map="auto",
 )
-print(generator(prompt))  # doctest: +SKIP
+sequences = pipeline(
+    "Who is the godfather Vito Corleone.",
+    max_length=200,
+    do_sample=True,
+    top_k=10,
+    num_return_sequences=1,
+    eos_token_id=tokenizer.eos_token_id,
+)
+for seq in sequences:
+    print(f"Result: {seq['generated_text']}")
+
+print("-------------------------------------------------")
+
+print(sequences)
