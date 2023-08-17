@@ -14,16 +14,13 @@ pipeline = transformers.pipeline(
     device_map="auto",
 )
 sequences = pipeline(
-    "Who is the godfather Vito Corleone.",
+    "Describe the character of the godfather Vito Corleone. Answer: ",
     max_length=200,
     do_sample=True,
     top_k=10,
     num_return_sequences=1,
     eos_token_id=tokenizer.eos_token_id,
+    temperature=0.5,
 )
 for seq in sequences:
     print(f"Result: {seq['generated_text']}")
-
-print("-------------------------------------------------")
-
-print(sequences)
