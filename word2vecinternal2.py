@@ -26,10 +26,10 @@ s = response.text
 
 s = s.replace("\n", " ")
 
-with open(s) as f:
-    lines = f.read().splitlines()
-for line in lines[:20]:
-    print(line)
+# with open(s) as f:
+#     lines = f.read().splitlines()
+# for line in lines[:20]:
+#     print(line)
 
 # s = sample.read()
 # f = s.replace("\n", " ")
