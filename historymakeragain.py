@@ -27,7 +27,7 @@ llm = OpenAI(openai_api_key="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
 
 # import wikipedia sentences
 candidate_sentences = pd.read_csv(
-    "/var/wd_smit/external_repos/knowledge-graph/data/output/kg/input_data.txt-out.csv"
+    "E:\Work\workbackups\llm\senteces_for_graph.csv"
 )
 
 df = pd.DataFrame(
