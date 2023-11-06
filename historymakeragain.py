@@ -27,19 +27,19 @@ llm = OpenAI(openai_api_key="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
 
 # import wikipedia sentences
 candidate_sentences = pd.read_csv(
-    "E:\Work\workbackups\llm\senteces_for_graph.csv"
+    "E:\Work\workbackups\llm\sentencetrial2.csv"
 )
 
 df = pd.DataFrame(
     {
         "source": list(
-            i.strip() for i in candidate_sentences[candidate_sentences.columns[0]]
+            i.strip() for i in candidate_sentences['source']
         ),
         "edge": list(
-            i.strip() for i in candidate_sentences[candidate_sentences.columns[1]]
+            i.strip() for i in candidate_sentences['edge']
         ),
         "target": list(
-            i.strip() for i in candidate_sentences[candidate_sentences.columns[2]]
+            i.strip() for i in candidate_sentences['target']
         ),
     }
 )
