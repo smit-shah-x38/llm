@@ -5,6 +5,7 @@ from langchain import PromptTemplate, LLMChain
 from flask_cors import CORS, cross_origin
 
 import re
+import os
 import pandas as pd
 import bs4
 import requests
@@ -23,7 +24,12 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config["CORS_HEADERS"] = "Content-Type"
 
-llm = OpenAI(openai_api_key="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")
+text_file = r"E:\Work\workbackups\localdata\apikey.txt"
+
+with open(text_file, "r") as f:
+    api_key = f.read().strip()
+
+llm = OpenAI(openai_api_key=api_key)
 
 # import wikipedia sentences
 candidate_sentences = pd.read_csv(
@@ -126,7 +132,6 @@ def ask():
             "response": response.replace("\n", ""),
             "context": context,
             "entities": entities,
-            "nodes": list(G.nodes),
             "history": conversation_history,
         }
     )
