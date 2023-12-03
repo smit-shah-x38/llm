@@ -1,24 +1,15 @@
 from flask import Flask, request, jsonify
-import langchain
 from langchain.llms import OpenAI
 from langchain import PromptTemplate, LLMChain
 from flask_cors import CORS, cross_origin
 
-import re
-import os
+import networkx as nx
 import pandas as pd
-import bs4
-import requests
 import spacy
-from spacy import displacy
 
 # Load the English language model
 nlp = spacy.load("en_core_web_sm")
 
-from spacy.matcher import Matcher
-from spacy.tokens import Span
-
-import networkx as nx
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -64,9 +55,8 @@ def return_context(noun):
     sentences = []
 
     if x in G.nodes:
-        neighbor_nodes = list(G.neighbors(x))  # get the list of neighbors of node n
+        neighbor_nodes = list(G.neighbors(x))  # get the list of neighbors
         neighbor_nodes.append(x)  # add node n to the list
-        H = G.subgraph(neighbor_nodes)
 
         neighbor_edges = list(G.edges(x, data=True))
 
