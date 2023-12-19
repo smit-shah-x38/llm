@@ -24,7 +24,7 @@ llm = OpenAI(openai_api_key=api_key)
 
 # import wikipedia sentences
 candidate_sentences = pd.read_csv(
-    r"E:\neov_ide\python\llm\ayurveda_usable.csv"
+    r"E:\neov_ide\python\llm\ayurveda_usable_asht.csv"
 )
 
 df = candidate_sentences

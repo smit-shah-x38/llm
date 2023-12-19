@@ -1,24 +1,14 @@
 from flask import Flask, request, jsonify
-import langchain
 from langchain.llms import OpenAI
 from langchain import PromptTemplate, LLMChain
 from flask_cors import CORS, cross_origin
 
-import re
-import os
 import pandas as pd
-import bs4
-import requests
 import spacy
-from spacy import displacy
+import networkx as nx
 
 # Load the English language model
 nlp = spacy.load("en_core_web_sm")
-
-from spacy.matcher import Matcher
-from spacy.tokens import Span
-
-import networkx as nx
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -33,20 +23,13 @@ llm = OpenAI(openai_api_key=api_key)
 
 # import wikipedia sentences
 candidate_sentences = pd.read_csv(
-    "E:\Work\workbackups\llm\sentencetrial2.csv"
-)
+    r"E:\Work\workbackups\llm\sentencetrial2.csv")
 
 df = pd.DataFrame(
     {
-        "source": list(
-            i.strip() for i in candidate_sentences['source']
-        ),
-        "edge": list(
-            i.strip() for i in candidate_sentences['edge']
-        ),
-        "target": list(
-            i.strip() for i in candidate_sentences['target']
-        ),
+        "source": list(i.strip() for i in candidate_sentences["source"]),
+        "edge": list(i.strip() for i in candidate_sentences["edge"]),
+        "target": list(i.strip() for i in candidate_sentences["target"]),
     }
 )
 
@@ -64,9 +47,8 @@ def return_context(noun):
     sentences = []
 
     if x in G.nodes:
-        neighbor_nodes = list(G.neighbors(x))  # get the list of neighbors of node n
+        neighbor_nodes = list(G.neighbors(x))
         neighbor_nodes.append(x)  # add node n to the list
-        H = G.subgraph(neighbor_nodes)
 
         neighbor_edges = list(G.edges(x, data=True))
 
